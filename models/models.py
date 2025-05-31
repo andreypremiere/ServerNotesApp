@@ -26,6 +26,12 @@ class Token(BaseModel):
     token_type: str
 
 
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+    nickname: str
+
+
 class SectionBase(BaseModel):
     title: str
     subtitle: Optional[str] = None
