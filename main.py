@@ -1,16 +1,23 @@
 from fastapi import FastAPI, Depends
 from typing import List
-
+from fastapi.middleware.cors import CORSMiddleware
 from uuid import UUID
-
 from JWTUtils import create_access_token, get_current_user
 from database import get_db
-from models.models import User, UserCreate, Token, Section, SectionBase, Note, NoteBase, UserOut, NoteOut
+from models.models import User, UserCreate, Token, Section, SectionBase, Note, NoteBase, UserOut, NoteOut, LoginRequest
 from services.noteService import NoteService
 from services.sectionService import SectionService
 from services.userService import UserService
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/register", response_model=UserOut)
@@ -20,8 +27,10 @@ async def register(user: UserCreate, db=Depends(get_db)):
 
 
 @app.post("/login", response_model=Token)
-async def login(nickname: str, password: str, db=Depends(get_db)):
+async def login(data: LoginRequest, db=Depends(get_db)):
     """Authenticate user and return JWT token."""
+    nickname = data.nickname
+    password = data.password
     user = await UserService.authenticate(db, nickname, password)
     access_token = create_access_token(data={"sub": str(user['id'])})
     return {"access_token": access_token, "token_type": "Bearer"}

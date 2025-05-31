@@ -62,3 +62,8 @@ class NoteOut(BaseModel):
     subtitle: Optional[str] = None
     content: Optional[str] = None
     map: Optional[dict] = None
+
+
+class LoginRequest(BaseModel):
+    nickname: str
+    password: str
