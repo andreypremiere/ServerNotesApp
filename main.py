@@ -33,7 +33,7 @@ async def login(data: LoginRequest, db=Depends(get_db)):
     password = data.password
     user = await UserService.authenticate(db, nickname, password)
     access_token = create_access_token(data={"sub": str(user['id'])})
-    return {"access_token": access_token, "token_type": "Bearer"}
+    return {"access_token": access_token, "token_type": "Bearer", 'nickname': nickname}
 
 
 @app.post("/sections", response_model=Section)
