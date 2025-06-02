@@ -42,6 +42,12 @@ class Section(SectionBase):
     user_id: UUID
 
 
+class SectionCreate(BaseModel):
+    id: Optional[UUID] = None
+    title: str
+    subtitle: str
+
+
 class SectionOut(BaseModel):
     id: UUID
     user_id: UUID
@@ -59,6 +65,14 @@ class NoteBase(BaseModel):
 class Note(NoteBase):
     id: UUID
     section_id: UUID
+
+
+class NoteCreate(BaseModel):
+    id: Optional[UUID] = None
+    title: str
+    subtitle: Optional[str] = None
+    content: Optional[str] = None
+    map: Optional[dict] = None
 
 
 class NoteOut(BaseModel):

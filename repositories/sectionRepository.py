@@ -1,15 +1,20 @@
 from uuid import UUID
-from models.models import SectionBase
+from models.models import SectionBase, SectionCreate
 
 
 class SectionRepository:
     @staticmethod
-    async def create(db, section: SectionBase, user_id: UUID):
+    async def create(db, section: SectionCreate, user_id: UUID):
         """Create a new section for a user."""
-        return await db.fetchrow(
-            "INSERT INTO sections (user_id, title, subtitle) VALUES ($1, $2, $3) RETURNING *",
-            user_id, section.title, section.subtitle
-        )
+        if section.id:
+            return await db.fetchrow(
+                "INSERT INTO sections (id, user_id, title, subtitle) VALUES ($1, $2, $3, $4) RETURNING *", section.id,
+                user_id, section.title, section.subtitle)
+        else:
+            return await db.fetchrow(
+                "INSERT INTO sections (user_id, title, subtitle) VALUES ($1, $2, $3) RETURNING *",
+                user_id, section.title, section.subtitle
+                )
 
     @staticmethod
     async def get_all(db, user_id: UUID):

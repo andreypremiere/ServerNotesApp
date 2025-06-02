@@ -1,18 +1,26 @@
 import json
 from uuid import UUID
 
-from models.models import NoteBase
+from models.models import NoteBase, NoteCreate
 
 
 class NoteRepository:
     @staticmethod
-    async def create(db, note: NoteBase, section_id: UUID):
+    async def create(db, note: NoteCreate, section_id: UUID):
         """Create a new note in a section."""
         serialized_map = json.dumps(note.map) if note.map is not None else None
-        return await db.fetchrow(
-            "INSERT INTO notes (section_id, title, subtitle, content, map) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-            section_id, note.title, note.subtitle, note.content, serialized_map
-        )
+        if note.id:
+            return await db.fetchrow(
+                "INSERT INTO notes (id, section_id, title, subtitle, content, map) VALUES ($1, $2, $3, $4, $5, "
+                "$6) RETURNING *",
+                note.id, section_id, note.title, note.subtitle, note.content, serialized_map
+            )
+        else:
+            print('Сработал метод без id')
+            return await db.fetchrow(
+                "INSERT INTO notes (section_id, title, subtitle, content, map) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+                section_id, note.title, note.subtitle, note.content, serialized_map
+            )
 
     @staticmethod
     async def update(db, note_id: UUID, note: NoteBase, section_id: UUID):

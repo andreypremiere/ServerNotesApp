@@ -2,13 +2,13 @@ from uuid import UUID
 from fastapi import HTTPException
 from typing import List
 
-from models.models import SectionBase, User, SectionOut
+from models.models import SectionBase, User, SectionOut, SectionCreate
 from repositories.sectionRepository import SectionRepository
 
 
 class SectionService:
     @staticmethod
-    async def create(db, section: SectionBase, current_user: User) -> SectionOut:
+    async def create(db, section: SectionCreate, current_user: User) -> SectionOut:
         """Create a new section for the authenticated user."""
         created_section = await SectionRepository.create(db, section, current_user.id)
         return SectionOut(**dict(created_section))

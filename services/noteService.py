@@ -1,7 +1,7 @@
 import json
 from uuid import UUID
 from fastapi import HTTPException
-from models.models import NoteBase, NoteOut, User
+from models.models import NoteBase, NoteOut, User, NoteCreate
 from repositories.noteRepository import NoteRepository
 from repositories.sectionRepository import SectionRepository
 
@@ -25,7 +25,7 @@ class NoteService:
         return [NoteService._parse_note(note) for note in notes]
 
     @staticmethod
-    async def create(db, note: NoteBase, section_id: UUID, current_user: User):
+    async def create(db, note: NoteCreate, section_id: UUID, current_user: User):
         """Create a new note in a section for the authenticated user."""
         section = await SectionRepository.get(db, section_id, current_user.id)
         if not section:

@@ -5,7 +5,7 @@ from uuid import UUID
 from JWTUtils import create_access_token, get_current_user
 from database import get_db
 from models.models import User, UserCreate, Token, Section, SectionBase, Note, NoteBase, UserOut, NoteOut, LoginRequest, \
-    TokenResponse
+    TokenResponse, SectionCreate, NoteCreate
 from services.noteService import NoteService
 from services.sectionService import SectionService
 from services.userService import UserService
@@ -38,7 +38,7 @@ async def login(data: LoginRequest, db=Depends(get_db)):
 
 
 @app.post("/sections", response_model=Section)
-async def create_section(section: SectionBase, current_user: User = Depends(get_current_user), db=Depends(get_db)):
+async def create_section(section: SectionCreate, current_user: User = Depends(get_current_user), db=Depends(get_db)):
     """Create a new section."""
     return await SectionService.create(db, section, current_user)
 
@@ -68,7 +68,7 @@ async def delete_section(section_id: UUID, current_user: User = Depends(get_curr
 
 
 @app.post("/sections/{section_id}/notes", response_model=Note)
-async def create_note(section_id: UUID, note: NoteBase, current_user: User = Depends(get_current_user), db=Depends(get_db)):
+async def create_note(section_id: UUID, note: NoteCreate, current_user: User = Depends(get_current_user), db=Depends(get_db)):
     """Create a new note in a section."""
     return await NoteService.create(db, note, section_id, current_user)
 
